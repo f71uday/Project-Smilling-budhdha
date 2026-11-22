@@ -265,10 +265,15 @@ function showAnalysis(data) {
   const classification = data.classification;
   const isClaim = classification.mail_type === "claim";
   const badge = document.getElementById("mail-type");
-  badge.textContent = isClaim ? "Claim email" : "Not a claim email";
+  const intentLabels = {claim: "Claim email", damage: "Damage claim", complaint: "Complaint", safety: "Safety report", other: "Not a claim email"};
+  badge.textContent = intentLabels[classification.intent] || (isClaim ? "Claim email" : "Not a claim email");
   badge.classList.toggle("is-other", !isClaim);
 
-  document.getElementById("analysis-message").textContent = data.message;
+  const warnings = [];
+  if (data.security?.injection_suspected) warnings.push("Possible prompt injection in this email; treat with care.");
+  if (data.needs_human) warnings.push("Human review required.");
+  if (data.estimated_saving_inr > 0) warnings.push(`Estimated saving from flagged duplicates: INR ${data.estimated_saving_inr.toLocaleString("en-IN")}.`);
+  document.getElementById("analysis-message").textContent = [data.message, ...warnings].join(" ");
   document.getElementById("analysis-summary").textContent = isClaim
     ? `Claim reason: ${formatClaimReason(classification.claim_reason)}.`
     : "This message is not routed for claim checks.";

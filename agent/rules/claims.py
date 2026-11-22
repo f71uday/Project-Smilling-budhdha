@@ -1,53 +1,16 @@
 """Deterministic claim checks. These findings support review; they do not decide claims."""
 from collections.abc import Mapping
-from datetime import date, datetime, timedelta
-from decimal import Decimal, InvalidOperation
-import re
+from datetime import date, timedelta
+
+from agent.rules.parsing import (
+    format_quantity,
+    normalise_invoice,
+    parse_date,
+    parse_email_quantity,
+    parse_quantity,
+)
 
 EXPIRY_CLAIM_WINDOW_DAYS = 90
-
-
-def _parse_date(value: date | str | None) -> date | None:
-    if isinstance(value, datetime):
-        return value.date()
-    if isinstance(value, date):
-        return value
-    if not isinstance(value, str) or not value.strip():
-        return None
-
-    for date_format in ("%Y-%m-%d", "%d-%m-%Y", "%d-%b-%Y", "%d-%B-%Y"):
-        try:
-            return datetime.strptime(value.strip(), date_format).date()
-        except ValueError:
-            continue
-    return None
-
-
-def _parse_quantity(value: str | None) -> Decimal | None:
-    if not value or not value.strip():
-        return None
-    try:
-        quantity = Decimal(value.strip())
-    except InvalidOperation:
-        return None
-    return quantity if quantity.is_finite() else None
-
-
-def _parse_email_quantity(value: str | None) -> Decimal | None:
-    if not value or not value.strip():
-        return None
-    numbers = re.findall(r"(?<![\w.])\d+(?:,\d{3})*(?:\.\d+)?(?![\w.])", value)
-    if len(numbers) != 1:
-        return None
-    return _parse_quantity(numbers[0].replace(",", ""))
-
-
-def _format_quantity(value: Decimal) -> str:
-    return format(value.normalize(), "f")
-
-
-def _normalise_invoice(value: object) -> str:
-    return str(value or "").strip().casefold()
 
 
 def evaluate_claim_quantity(
@@ -55,8 +18,8 @@ def evaluate_claim_quantity(
     invoiced_quantity: str | None,
 ) -> dict[str, object]:
     """Require the email's claimed quantity to be strictly below invoiced quantity."""
-    claimed = _parse_email_quantity(claimed_quantity)
-    invoiced = _parse_quantity(invoiced_quantity)
+    claimed = parse_email_quantity(claimed_quantity)
+    invoiced = parse_quantity(invoiced_quantity)
     if claimed is None or invoiced is None:
         return {
             "status": "unverified",
@@ -65,8 +28,8 @@ def evaluate_claim_quantity(
         }
 
     details = {
-        "claimed_quantity": _format_quantity(claimed),
-        "invoiced_quantity": _format_quantity(invoiced),
+        "claimed_quantity": format_quantity(claimed),
+        "invoiced_quantity": format_quantity(invoiced),
         "rule": "claimed_quantity < invoiced_quantity",
     }
     if claimed < invoiced:
@@ -94,7 +57,7 @@ def find_duplicate_claim_line_indices(items: list[Mapping[str, str | None]]) -> 
     duplicates: set[int] = set()
     for index, item in enumerate(items):
         batch = (item.get("batch_number") or "").strip().upper()
-        invoice = _normalise_invoice(item.get("invoice_reference"))
+        invoice = normalise_invoice(item.get("invoice_reference"))
         quantity = " ".join((item.get("claimed_quantity") or "").split()).casefold()
         if not batch or not invoice or not quantity:
             continue
@@ -135,7 +98,7 @@ def evaluate_duplicate_claim(
         "exact_duplicate_register_rows": 0,
         "quantity_comparable": None,
     }
-    invoice = _normalise_invoice(invoice_reference)
+    invoice = normalise_invoice(invoice_reference)
     if not invoice:
         return {
             **base,
@@ -147,7 +110,7 @@ def evaluate_duplicate_claim(
         row
         for row in rows
         if isinstance(row, Mapping)
-        and _normalise_invoice(row.get("original_invoice_ref")) == invoice
+        and normalise_invoice(row.get("original_invoice_ref")) == invoice
     ]
     if not invoice_matches:
         return {
@@ -157,7 +120,7 @@ def evaluate_duplicate_claim(
         }
 
     quantity_text = (claimed_quantity or "").strip()
-    candidate_quantity = _parse_quantity(claimed_quantity)
+    candidate_quantity = parse_quantity(claimed_quantity)
     if quantity_text and candidate_quantity is None:
         matching_refs = [
             str(row.get("claim_no", "")).strip()
@@ -179,7 +142,7 @@ def evaluate_duplicate_claim(
         matches = [
             row
             for row in invoice_matches
-            if _parse_quantity(str(row.get("qty_claimed", ""))) == candidate_quantity
+            if parse_quantity(str(row.get("qty_claimed", ""))) == candidate_quantity
         ]
         if not matches:
             return {
@@ -218,8 +181,8 @@ def evaluate_expiry_claim_window(
     batch_expiry_date: date | str | None,
 ) -> dict[str, object]:
     """Apply the provisional 90-day window, using email receipt as the claim-date proxy."""
-    received = _parse_date(claim_received_date)
-    expiry = _parse_date(batch_expiry_date)
+    received = parse_date(claim_received_date)
+    expiry = parse_date(batch_expiry_date)
     if received is None or expiry is None:
         return {
             "status": "unverified",
@@ -251,47 +214,3 @@ def evaluate_expiry_claim_window(
         "window_end": window_end.isoformat(),
         "days_from_expiry": (received - expiry).days,
     }
-
-
-def expiry_risk_score(
-    days_to_expiry: int,
-    projected_days_of_cover: int | float | Decimal,
-    proposed_quantity: int | float | Decimal,
-    average_monthly_outward: int | float | Decimal,
-    prior_claim: bool = False,
-    fefo_not_used: bool = False,
-) -> tuple[int, list[str]]:
-    """Score transparent pilot risk signals; this is not a claim or allocation decision."""
-    score = 0
-    reasons = []
-
-    if days_to_expiry <= 90:
-        score += 30
-        reasons.append("LOW_DAYS_TO_EXPIRY")
-    if days_to_expiry <= 30:
-        score += 30
-        reasons.append("VERY_LOW_DAYS_TO_EXPIRY")
-    if projected_days_of_cover > 90:
-        score += 25
-        reasons.append("HIGH_PROJECTED_DAYS_OF_COVER")
-    if proposed_quantity > average_monthly_outward:
-        score += 30
-        reasons.append("PROPOSED_ABOVE_MONTHLY_OUTWARD")
-    if prior_claim:
-        score += 10
-        reasons.append("PRIOR_EXPIRY_CLAIM")
-    if fefo_not_used:
-        score += 10
-        reasons.append("FEFO_BATCH_NOT_USED")
-
-    return min(score, 100), reasons
-
-
-def expiry_risk_band(score: int, unverified: bool = False) -> tuple[str, str]:
-    if unverified:
-        return "unverified", "human_review"
-    if score >= 60:
-        return "high", "hold_or_reallocate"
-    if score >= 30:
-        return "medium", "reduce_or_approval"
-    return "low", "allow"

@@ -7,14 +7,20 @@ plain HTML page. It proves your pipeline works on day one. Replace the graph, th
 the page with your own design.
 
 ```
-app.py            FastAPI entrypoint (Vercel looks for `app` here)
-agent/llm.py      the only file that knows the model provider (OpenRouter)
-agent/tools.py    tools that read data/; exact facts come from here
-agent/graph.py    the LangGraph graph; replace it with yours
-data/             put the four CSVs from the data pack here
-public/           index.html, app.js, style.css: the frontend
-tests/            run with pytest; no API key needed
-AGENTS.md         instructions for your AI coding agent
+app.py                   FastAPI entrypoint (Vercel looks for `app` here)
+agent/llm.py             the only file that knows the model provider (OpenRouter)
+agent/cleaning.py        input cleaning and prompt-injection screening
+agent/tools/             @tool data lookups (batches, claims, sales, stock); facts come from here
+agent/rules/             plain-Python business rules (claims, expiry risk, scheme, savings)
+agent/graphs/            LangGraph flows
+  claim_mail.py            email -> intent -> extract -> checks -> summary (3 model calls)
+  expiry_risk.py           allocation proposal -> evidence -> risk score (no model)
+  scheme.py                near-expiry C&F stock -> scheme eligibility + money saved (no model)
+  question.py              legacy question loop; not for new work
+data/                    the CSVs from the data pack
+public/                  index.html, app.js, style.css: the frontend
+tests/                   run with pytest; no API key needed
+AGENTS.md                instructions for your AI coding agent
 ```
 
 ## Run it on your laptop
