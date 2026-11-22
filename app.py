@@ -12,9 +12,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 
-from agent.graph import analyze_claim_mail, run_question
+from agent.graphs import analyze_claim_mail, check_scheme_eligibility, predict_expiry_risk, run_question
 from agent.tools import expiry_risk_options
-from agent.workflows import predict_expiry_risk
 
 app = FastAPI(title="Project Sankalp pilot")
 ROOT = Path(__file__).resolve().parent
@@ -105,6 +104,12 @@ def list_expiry_risk_options():
 def predict_expiry_risk_route(body: ExpiryRiskRequest):
     """Return a deterministic expiry risk estimate with its source evidence."""
     return predict_expiry_risk(body.model_dump())
+
+
+@app.post("/api/scheme/check")
+def check_scheme_route(body: ExpiryRiskRequest):
+    """Say whether a scheme can be offered on near-expiry C&F stock, and the money it would save."""
+    return check_scheme_eligibility(body.model_dump())
 
 
 @app.get("/")
