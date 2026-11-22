@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173b4c">
+  <title>Commercial operations review | Project Sankalp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Project Sankalp home">
+      <span class="brand-mark" aria-hidden="true">S</span>
+      <span>Project Sankalp</span>
+    </a>
+    <span class="workspace-label">Commercial operations</span>
+  </header>
+
+  <nav class="tool-tabs" role="tablist" aria-label="Review tools">
+    <button id="claims-tab" class="tool-tab" type="button" role="tab" aria-selected="true" aria-controls="claims-panel">Claim email</button>
+    <button id="expiry-tab" class="tool-tab" type="button" role="tab" aria-selected="false" aria-controls="expiry-panel" tabindex="-1">Expiry risk</button>
+  </nav>
+
+  <main>
+    <section id="claims-panel" class="tab-panel" role="tabpanel" aria-labelledby="claims-tab" tabindex="0">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">Claim email review</p>
+      <h1 id="page-title">Review a message</h1>
+      <p class="intro-copy">Choose an email to read it in full, then run an analysis to see whether it needs claim handling.</p>
+    </section>
+
+    <section class="review" aria-labelledby="message-label">
+      <div class="select-row">
+        <label id="message-label" for="mail-select">Select an email</label>
+        <select id="mail-select" disabled>
+          <option>Loading emails...</option>
+        </select>
+      </div>
+
+      <article id="mail-preview" class="mail-preview" aria-live="polite">
+        <div class="mail-heading">
+          <div>
+            <p class="mail-caption">Selected message</p>
+            <h2 id="mail-subject">Loading email</h2>
+          </div>
+          <time id="mail-date"></time>
+        </div>
+        <dl class="mail-meta">
+          <div>
+            <dt>From</dt>
+            <dd id="mail-sender"></dd>
+          </div>
+          <div id="stockist-row" hidden>
+            <dt>Stockist code</dt>
+            <dd id="mail-stockist"></dd>
+          </div>
+        </dl>
+        <div class="mail-body-wrap">
+          <p class="mail-caption">Email body</p>
+          <pre id="mail-body" class="mail-body"></pre>
+        </div>
+      </article>
+
+      <div class="action-row">
+        <p id="status" role="status" aria-live="polite">Choose a message to begin.</p>
+        <button id="analyze-button" type="button" disabled>Run analysis</button>
+      </div>
+    </section>
+
+    <section id="analysis-panel" class="analysis-panel" aria-labelledby="analysis-title" aria-live="polite" hidden>
+      <div class="analysis-heading">
+        <div>
+          <p class="eyebrow">Review result</p>
+          <h2 id="analysis-title">Analysis</h2>
+        </div>
+        <span id="mail-type" class="result-badge"></span>
+      </div>
+      <p id="analysis-message" class="analysis-message"></p>
+      <p id="analysis-summary" class="analysis-summary"></p>
+
+      <div id="batch-block" class="result-block" hidden>
+        <div class="batch-heading">
+          <div>
+            <h3>Batch master check</h3>
+            <p>These batch results come from the supplied data file.</p>
+          </div>
+        </div>
+        <ul id="batch-results" class="batch-results"></ul>
+      </div>
+
+      <div id="claim-checks-block" class="result-block" hidden>
+        <h3>Claim checks</h3>
+        <p class="claim-check-intro">Quantity, duplicate and expiry findings are review signals, not decisions.</p>
+        <ul id="claim-check-results" class="claim-check-results"></ul>
+        <p class="policy-note">The email quantity must be strictly less than invoiced quantity. Free quantity is excluded; units are not converted.</p>
+        <p id="expiry-policy-note" class="policy-note" hidden>Expiry uses a provisional 90-day window and the email received date as a proxy. Confirm the authoritative policy before acting.</p>
+      </div>
+    </section>
+    <p class="review-note">Analysis helps organize the review. It does not approve claims or issue credits.</p>
+    </section>
+
+    <section id="expiry-panel" class="tab-panel" role="tabpanel" aria-labelledby="expiry-tab" tabindex="0" hidden>
+      <section class="intro" aria-labelledby="expiry-page-title">
+        <p class="eyebrow">Expiry risk</p>
+        <h1 id="expiry-page-title">Assess a proposed allocation</h1>
+        <p class="intro-copy">Compare the proposed quantity with current C&amp;F stock, expiry timing and recorded demand before a reviewer decides what to do.</p>
+      </section>
+
+      <form id="expiry-form" class="expiry-form" aria-describedby="expiry-form-help">
+        <p id="expiry-form-help" class="form-help">Choose the stockist, product and batch, then enter the proposal date and quantity.</p>
+        <div class="expiry-form-grid">
+          <div class="form-field">
+            <label for="proposal-stockist">Stockist</label>
+            <select id="proposal-stockist" required disabled>
+              <option value="">Loading stockists...</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="proposal-cnf">C&amp;F centre</label>
+            <select id="proposal-cnf" required disabled>
+              <option value="">Loading centres...</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="proposal-sku">Product</label>
+            <select id="proposal-sku" required disabled>
+              <option value="">Loading products...</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="proposal-batch">Batch</label>
+            <select id="proposal-batch" required disabled>
+              <option value="">Choose a product first</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="proposal-date">Proposal date</label>
+            <input id="proposal-date" name="proposal-date" type="date" required>
+          </div>
+          <div class="form-field">
+            <label for="proposal-quantity">Proposed quantity (packs)</label>
+            <input id="proposal-quantity" name="proposal-quantity" type="number" min="1" step="1" required>
+          </div>
+        </div>
+        <div class="expiry-form-actions">
+          <p id="expiry-form-status" class="form-status" role="status" aria-live="polite">Loading source data...</p>
+          <button id="expiry-submit" type="submit" disabled>Assess expiry risk</button>
+        </div>
+      </form>
+
+      <section id="expiry-result" class="risk-result" aria-labelledby="expiry-result-title" aria-live="polite" hidden>
+        <div class="risk-result-heading">
+          <div>
+            <p class="eyebrow">Assessment</p>
+            <h2 id="expiry-result-title">Expiry risk result</h2>
+          </div>
+          <span id="expiry-risk-badge" class="risk-badge"></span>
+        </div>
+        <div class="risk-score-row">
+          <div>
+            <p class="risk-score-label">Pilot risk score</p>
+            <p id="expiry-risk-score" class="risk-score"></p>
+          </div>
+          <p id="expiry-recommendation" class="risk-recommendation"></p>
+        </div>
+        <div class="risk-section">
+          <h3>Why this was flagged</h3>
+          <ul id="expiry-reasons" class="risk-reasons"></ul>
+        </div>
+        <div class="risk-section">
+          <h3>Estimate</h3>
+          <dl id="expiry-metrics" class="claim-fields"></dl>
+        </div>
+        <div class="risk-section">
+          <h3>FEFO check</h3>
+          <p id="expiry-fefo"></p>
+        </div>
+        <div class="risk-section">
+          <h3>Source evidence</h3>
+          <ul id="expiry-evidence" class="risk-evidence"></ul>
+          <p id="expiry-data-basis" class="policy-note"></p>
+        </div>
+        <p class="human-review-note">This is a pilot estimate. It does not block, change or transfer stock; an authorised reviewer makes the decision.</p>
+      </section>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+claim_no,claim_date,stockist_code,cnf_code,sku_code,batch_no,expiry_date_as_claimed,qty_claimed,claim_value_inr,claim_type,original_invoice_ref,status,verified_by,credit_note_no,credit_note_date,credit_value_inr,remarks
+CLM-2504-04435,16-04-2025,STK0057,CF-E01,PFL1002,L2300219,30-04-2025,128,18278.4,Near expiry,,Rejected,P.Ghosh,,,,Duplicate of earlier claim
+CLM-2506-04439,07-06-2025,STK0124,CF-S01,PFL1101,L2310150,30-04-2025,685,21372.0,Expired,INV/S01/2406/007487,Rejected,K.Raman,,,,Duplicate of earlier claim
+CLM-2506-04463,26-06-2025,STK0103,CF-S01,PFL1303,K2330377,31-03-2025,177,,Expired,,Rejected,K.Raman,,,,Duplicate of earlier claim
+CLM-2508-04431,14-08-2025,STK0045,CF-N02,PFL1105,M2310526,31-05-2025,179,21157.8,Expired,INV/N02/2406/005657,Rejected,S.Tiwari,,,,Duplicate of earlier claim
+CLM-2508-04473,20-08-2025,STK0132,CF-S02,PFL1002,D2400222,30-09-2025,297,42411.6,Near expiry,,Rejected,V.Reddy,,,,Duplicate of earlier claim
+CLM-2508-04480,26-08-2025,STK0150,CF-S02,PFL1105,B2410527,31-Jul-2025,75,8865.0,Expired,,Rejected,V.Reddy,,,,Duplicate of earlier claim
+CLM-2509-04425,26-09-2025,STK0083,CF-W01,PFL1202,K2320262,30-Sep-2025,279,17242.2,Near expiry,INV/W01/2406/006762,Rejected,A.Kulkarni,,,,Duplicate of earlier claim
+CLM-2510-04467,01-10-2025,STK0142,CF-S02,PFL1002,B2400221,31-Jul-2025,184,26275.2,Near expiry,,Rejected,V.Reddy,,,,Duplicate of earlier claim
+CLM-2510-04462,23-10-2025,STK0018,CF-N01,PFL1103,B2410388,31-07-2025,97,9447.8,Expired,,Rejected,R.Malhotra,,,,Duplicate of earlier claim
+CLM-2511-04411,13-11-2025,STK0136,CF-S02,PFL1103,E2410390,31-10-2025,155,15097.0,Near expiry,INV/S02/2412/024678,Rejected,V.Reddy,,,,Duplicate of earlier claim
+CLM-2511-04483,17-11-2025,STK0142,CF-S02,PFL1002,H2400224,2026-01-31,700,99960.0,Near expiry,,Rejected,V.Reddy,,,,Duplicate of earlier claim
+CLM-2511-04507,17-11-2025,STK0022,CF-N01,PFL1103,E2410390,31-10-2025,1027,100029.8,Near expiry,,Rejected,R.Malhotra,,,,Duplicate of earlier claim
+CLM-2511-04407,27-11-2025,STK0063,CF-E01,PFL1004,M2300456,30-11-2025,83,15529.3,Near expiry,,Rejected,P.Ghosh,,,,Duplicate of earlier claim
+CLM-2512-04475,01-Dec-2025,STK0020,CF-N01,PFL1202,K2320262,30-09-2025,191,11803.8,Expired,,Rejected,R.Malhotra,,,,Duplicate of earlier claim
+CLM-2512-04397,03-12-2025,STK0055,CF-E01,PFL1101,F2410153,30-11-2025,211,6583.2,Near expiry,INV/E01/2502/028559,Rejected,P.Ghosh,,,,Duplicate of earlier claim
+CLM-2601-04410,03-Jan-2026,STK0126,CF-S02,PFL1103,G2410391,31-12-2025,365,35551.0,Near expiry,,Rejected,V.Reddy,,,,Duplicate of earlier claim
+CLM-2602-04464,19-02-2026,STK0083,CF-W01,PFL1001,D2400104,31-03-2026,526,37556.4,Near expiry,,Rejected,A.Kulkarni,,,,Duplicate of earlier claim
+CLM-2603-04511,01-03-2026,STK0137,CF-S02,PFL1102,B2410269,31-01-2026,102,9108.6,Near expiry,,Rejected,V.Reddy,,,,Duplicate of earlier claim
+CLM-2603-04465,19-03-2026,STK0062,CF-E01,PFL1007,F2400716,31-05-2026,5,263.0,Near expiry,INV/E01/2501/026434,Rejected,P.Ghosh,,,,Duplicate of earlier claim
+CLM-2604-04468,08-04-2026,stk0142,CF-S02,PFL1104,E2410411,30-Apr-2026,38,3936.8,Near expiry,INV/S02/2412/024704,Rejected,V.Reddy,,,,Duplicate of earlier claim
+CLM-2604-04387,11-04-2026,STK0116,CF-S01,PFL1103,J2410392,28-02-2026,108,10519.2,Expired,INV/S01/2505/038139,Rejected,K.Raman,,,,Duplicate of earlier claim
+CLM-2604-04481,21-04-2026,STK0051,CF-E01,PFL1101,H2410154,31-01-2026,309,9640.8,Expired,INV/E01/2503/031504,Rejected,P.Ghosh,,,,Duplicate of earlier claim
+CLM-2604-04393,26-Apr-2026,STK0139,CF-S02,PFL1004,B2400457,31-01-2026,45,8419.5,Expired,,Rejected,V.Reddy,,,,Duplicate of earlier claim
+CLM-2605-04486,01-05-2026,STK0004,CF-N01,PFL1001,G2400105,30-06-2026,790,56406.0,Near expiry,INV-N01/2412/022033,Rejected,R.Malhotra,,,,Duplicate of earlier claim
+CLM-2605-04451,20-05-2026,STK0103,CF-S01,PFL1001,D2400104,2026-03-31,242,17278.8,Expired,INV/S01/2411/020676,Rejected,K.Raman,,,,Duplicate of earlier claim
+CLM-2605-04424,26-05-2026,STK0134,CF-S02,PFL1104,E2410411,30-04-2026,187,19373.2,Near expiry,,Rejected,V.Reddy,,,,Duplicate of earlier claim
+CLM-2605-04508,2026-05-30,STK0082,CF-W01,PFL1302,E2430263,30-04-2026,266,10214.4,Near expiry,INV/W01/2412/023595,Rejected,A.Kulkarni,,,,Duplicate of earlier claim
+CLM-2606-04506,2026-06-22,STK0057,CF-E01,PFL1304,F2430404,31-05-2026,34,3274.2,Near expiry,,Rejected,P.Ghosh,,,,Duplicate of earlier claim
+CLM-2607-04443,06-07-2026,STK0126,CF-S02,PFL1104,C2410410,28-02-2026,86,8909.6,Expired,,Rejected,V.Reddy,,,,Duplicate of earlier claim
+CLM-2607-04384,19-07-2026,STK0122,CF-S01,PFL1301,K2430146,30-09-2026,211,33253.6,Near expiry,,Rejected,K.Raman,,,,Duplicate of earlier claim
+CLM-2608-04515,02-08-2026,STK0041,CF-N02,PFL1507,H2450713,31-07-2026,66,12163.8,Near expiry,INV/N02/2503/031427,Rejected,S.Tiwari,,,,Duplicate of earlier claim

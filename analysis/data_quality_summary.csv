@@ -1,0 +1,2 @@
+sales_exact_duplicate_rows,claim_exact_duplicate_rows,stock_exact_duplicate_rows,batch_exact_duplicate_rows,claims_missing_invoice_reference_rows,unknown_sales_sku_rows,unknown_claim_sku_rows,unknown_sales_stockist_rows,unknown_claim_stockist_rows,blank_stock_batch_rows
+745,23,0,0,884,0,0,0,0,270
