@@ -1,5 +1,7 @@
 # Project Sankalp pilot: starter
 
+The project is up and running at [https://project-smilling-budhdha.vercel.app](https://project-smilling-budhdha.vercel.app).
+
 An optional skeleton for the recommended path. It already deploys to Vercel: a FastAPI backend, a LangGraph tool loop and a
 plain HTML page. It proves your pipeline works on day one. Replace the graph, the tools and
 the page with your own design.
