@@ -60,6 +60,7 @@ def validate_proposal(state: StockState) -> dict:
         "cnf": cnf_key(p.get("cnf_code")),
         "sku": code(p.get("sku_code")),
         "batch_no": code(p.get("batch_no")),
+        "on_scheme": bool(p.get("on_scheme")),
     }
     evidence = {"stockist": None, "batch": None, "snapshot": None, "prior_expiry_claims": [], "fefo": None}
     if date is None:

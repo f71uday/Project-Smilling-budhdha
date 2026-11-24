@@ -833,3 +833,7 @@ button:disabled {
 .queue-meta { color: var(--muted); font-size: .8rem; }
 .queue-findings { margin: 0; padding-left: 1rem; }
 .queue-findings li { margin: 0; }
+
+.form-check { display: flex; align-items: center; gap: .5rem; }
+.form-check input { width: auto; }
+.form-check label { margin: 0; }

@@ -1,5 +1,7 @@
 """Primary-sales (invoice) lookups."""
+from collections import defaultdict
 from decimal import Decimal, InvalidOperation
+from functools import lru_cache
 
 from langchain_core.tools import tool
 
@@ -41,3 +43,21 @@ def lookup_invoice_quantity(invoice_no: str, stockist_code: str, sku_code: str, 
         "invoice_line_count": len(unique),
         "duplicate_source_rows_removed": len(matching) - len(unique),
     }
+
+
+@lru_cache(maxsize=1)
+def _purchases_by_stockist_sku() -> dict[tuple[str, str], list[dict[str, str]]]:
+    """Invoice lines per stockist and product. Exact duplicate source rows count once."""
+    index: dict[tuple[str, str], list[dict[str, str]]] = defaultdict(list)
+    for row in {tuple(r.items()): r for r in data.sales()}.values():
+        index[(data.code(row["stockist_code"]), data.sku_key(row["sku_code"]))].append(
+            {"invoice_date": row["invoice_date"].strip(), "invoiced_qty": row["invoiced_qty"].strip()}
+        )
+    return index
+
+
+@tool
+def lookup_purchase_history(stockist_code: str, sku_code: str) -> dict:
+    """Return every primary-sales invoice line (date and invoiced quantity) for one stockist and product."""
+    rows = _purchases_by_stockist_sku().get((data.code(stockist_code), data.sku_key(sku_code)), [])
+    return {"found": bool(rows), "purchases": rows}

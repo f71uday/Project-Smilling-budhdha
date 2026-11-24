@@ -42,6 +42,7 @@ class ExpiryRiskRequest(BaseModel):
     sku_code: str = Field(min_length=1)
     batch_no: str = Field(min_length=1)
     proposed_quantity: Decimal = Field(gt=0)
+    on_scheme: bool = False
 
 
 def _read_claim_emails() -> list[dict[str, str]]:

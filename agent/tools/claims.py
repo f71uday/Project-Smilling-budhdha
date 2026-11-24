@@ -1,5 +1,6 @@
 """Expiry-claim register lookups."""
-from collections import Counter
+from collections import Counter, defaultdict
+from functools import lru_cache
 
 from langchain_core.tools import tool
 
@@ -8,12 +9,16 @@ from agent.tools import data
 _FIELDS = ("claim_no", "claim_date", "claim_type", "original_invoice_ref", "qty_claimed", "claim_value_inr", "status")
 
 
+@lru_cache(maxsize=1)
+def _claims_by_key() -> dict[tuple[str, str, str], list[dict[str, str]]]:
+    index: dict[tuple[str, str, str], list[dict[str, str]]] = defaultdict(list)
+    for row in data.expiry_claims():
+        index[(data.code(row["stockist_code"]), data.sku_key(row["sku_code"]), data.code(row["batch_no"]))].append(row)
+    return index
+
+
 def claim_rows(stockist_code: str, sku_code: str, batch_no: str) -> list[dict[str, str]]:
-    key = data.code(stockist_code), data.sku_key(sku_code), data.code(batch_no)
-    return [
-        row for row in data.expiry_claims()
-        if (data.code(row["stockist_code"]), data.sku_key(row["sku_code"]), data.code(row["batch_no"])) == key
-    ]
+    return _claims_by_key().get((data.code(stockist_code), data.sku_key(sku_code), data.code(batch_no)), [])
 
 
 @tool
