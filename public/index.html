@@ -22,6 +22,7 @@
   <nav class="tool-tabs" role="tablist" aria-label="Review tools">
     <button id="claims-tab" class="tool-tab" type="button" role="tab" aria-selected="true" aria-controls="claims-panel">Claim email</button>
     <button id="expiry-tab" class="tool-tab" type="button" role="tab" aria-selected="false" aria-controls="expiry-panel" tabindex="-1">Expiry risk</button>
+    <button id="queue-tab" class="tool-tab" type="button" role="tab" aria-selected="false" aria-controls="queue-panel" tabindex="-1">Work queue</button>
   </nav>
 
   <main>
@@ -202,6 +203,55 @@
         </div>
         <p class="human-review-note">This is a pilot estimate. It does not block, change or transfer stock; an authorised reviewer makes the decision.</p>
       </section>
+    </section>
+
+    <section id="queue-panel" class="tab-panel" role="tabpanel" aria-labelledby="queue-tab" tabindex="0" hidden>
+      <section class="intro" aria-labelledby="queue-page-title">
+        <p class="eyebrow">Claim work queue</p>
+        <h1 id="queue-page-title">Claims ranked by priority</h1>
+        <p class="intro-copy">Every register claim is checked for missing invoice, quantity, price, policy window, duplicates and settlement time, then ranked P1 to P5. Rankings are review signals, not decisions.</p>
+      </section>
+
+      <div class="queue-controls">
+        <label for="queue-status">Show</label>
+        <select id="queue-status">
+          <option value="Pending">Pending claims</option>
+          <option value="Credited">Credited claims</option>
+          <option value="Rejected">Rejected claims</option>
+          <option value="all">All claims</option>
+        </select>
+        <label for="queue-limit">Rows</label>
+        <select id="queue-limit">
+          <option value="25">25</option>
+          <option value="50" selected>50</option>
+          <option value="100">100</option>
+          <option value="500">500</option>
+        </select>
+        <button id="queue-refresh" type="button">Refresh</button>
+        <p id="queue-status-message" class="form-status" role="status" aria-live="polite">Open this tab to load the queue.</p>
+      </div>
+
+      <div id="queue-summary" class="queue-summary" hidden>
+        <p id="queue-totals" class="queue-totals"></p>
+        <ul id="queue-bands" class="queue-bands"></ul>
+      </div>
+
+      <div class="queue-table-wrap" id="queue-table-wrap" hidden>
+        <table class="queue-table">
+          <thead>
+            <tr>
+              <th scope="col">Priority</th>
+              <th scope="col">Claim</th>
+              <th scope="col" class="num">Value (INR)</th>
+              <th scope="col">Stockist / SKU / batch</th>
+              <th scope="col">Settlement time</th>
+              <th scope="col">Findings</th>
+            </tr>
+          </thead>
+          <tbody id="queue-rows"></tbody>
+        </table>
+      </div>
+      <p class="human-review-note">The queue is read-only. Priority weights and the high-value line are pilot settings, not approved policy; an authorised reviewer decides each claim.</p>
     </section>
   </main>
   <script src="/app.js"></script>
