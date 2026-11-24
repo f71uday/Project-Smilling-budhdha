@@ -10,6 +10,9 @@ _INJECTION_PATTERNS = {
     "role_hijack": r"\b(you are now|act as|pretend to be|new role|developer mode|jailbreak)\b",
     "reveal_prompt": r"\b(reveal|show|print|repeat)\b.{0,30}\b(system prompt|instructions|api key|secret)\b",
     "force_decision": r"\b(approve|credit|accept|mark)\b.{0,30}\b(this claim|all claims|as valid|immediately)\b.{0,30}(without|regardless|no need)",
+    "addressed_to_ai": r"\b(note|message|instruction)s?\b.{0,20}\b(for|to)\b.{0,10}\b(the )?(ai|assistant|bot|model|llm|system)\b",
+    "skip_checks": r"\b(skip|bypass|ignore|waive)\b.{0,25}\b(check|validation|verification|review|rule)s?\b",
+    "pre_approved": r"\bpre-?\s?approved\b",
     "chat_markup": r"(<\|?(system|assistant|im_start)\|?>|\[/?INST\]|^\s*(system|assistant)\s*:)",
 }
 
