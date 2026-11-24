@@ -6,8 +6,10 @@ from agent.rules import (
     evaluate_claim_quantity,
     evaluate_duplicate_claim,
     evaluate_expiry_claim_window,
+    evaluate_supplied_quantity,
     find_duplicate_claim_line_indices,
     parse_email_quantity,
+    parse_quantity,
 )
 from agent.tools import ALL_TOOLS
 
@@ -71,7 +73,11 @@ def _quantity_check(stockist: str, batch: dict, invoice_ref: str | None, claimed
     if not invoice["found"]:
         return _unverified(invoice["reason"])
     result = evaluate_claim_quantity(claimed, invoice["invoiced_qty"])
-    return {**result, "invoiced_quantity": invoice["invoiced_qty"]} if result["status"] == "unverified" else result
+    if result["status"] != "unverified":
+        result["supplied_check"] = evaluate_supplied_quantity(
+            parse_email_quantity(claimed), parse_quantity(invoice["invoiced_qty"]), parse_quantity(invoice.get("free_qty")))
+        return result
+    return {**result, "invoiced_quantity": invoice["invoiced_qty"]}
 
 
 def _details(item: dict, reason: str, batch: dict | None = None) -> dict:

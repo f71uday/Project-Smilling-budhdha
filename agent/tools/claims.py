@@ -9,10 +9,10 @@ _FIELDS = ("claim_no", "claim_date", "claim_type", "original_invoice_ref", "qty_
 
 
 def claim_rows(stockist_code: str, sku_code: str, batch_no: str) -> list[dict[str, str]]:
-    key = data.code(stockist_code), data.code(sku_code), data.code(batch_no)
+    key = data.code(stockist_code), data.sku_key(sku_code), data.code(batch_no)
     return [
         row for row in data.expiry_claims()
-        if (data.code(row["stockist_code"]), data.code(row["sku_code"]), data.code(row["batch_no"])) == key
+        if (data.code(row["stockist_code"]), data.sku_key(row["sku_code"]), data.code(row["batch_no"])) == key
     ]
 
 

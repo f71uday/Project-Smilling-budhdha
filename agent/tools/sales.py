@@ -29,8 +29,10 @@ def lookup_invoice_quantity(invoice_no: str, stockist_code: str, sku_code: str, 
         quantities.append(quantity)
 
     total = sum(quantities, Decimal(0))
+    free = sum((Decimal(r["free_qty"].strip() or "0") for r in unique), Decimal(0))
     return {
         "found": True,
+        "free_qty": format(free.normalize(), "f"),
         "invoice_no": key[0],
         "stockist_code": key[1],
         "sku_code": key[2],

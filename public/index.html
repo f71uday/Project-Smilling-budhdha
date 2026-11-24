@@ -40,6 +40,23 @@
         </select>
       </div>
 
+      <details id="custom-mail" class="custom-mail">
+        <summary>Or type your own email</summary>
+        <form id="custom-mail-form" class="custom-mail-form">
+          <label for="custom-from">Sender name</label>
+          <input id="custom-from" type="text" autocomplete="off">
+          <label for="custom-stockist">Stockist code (for example STK0001)</label>
+          <input id="custom-stockist" type="text" autocomplete="off">
+          <label for="custom-date">Received date</label>
+          <input id="custom-date" type="date">
+          <label for="custom-subject">Subject</label>
+          <input id="custom-subject" type="text" autocomplete="off">
+          <label for="custom-body">Email body</label>
+          <textarea id="custom-body" rows="7" required placeholder="Paste or type the email, including batch, invoice and quantity."></textarea>
+          <button id="custom-use" type="submit">Use this email</button>
+        </form>
+      </details>
+
       <article id="mail-preview" class="mail-preview" aria-live="polite">
         <div class="mail-heading">
           <div>
