@@ -11,6 +11,11 @@ def code(value: object) -> str:
     return str(value or "").strip().upper()
 
 
+def sku_key(value: object) -> str:
+    """Claims write some SKUs as PFL-1001; compare on letters and digits only."""
+    return "".join(ch for ch in code(value) if ch.isalnum())
+
+
 def cnf_key(value: object) -> str:
     """C&F codes appear as both CF-N01 and CFN01 in the snapshot; compare on letters and digits only."""
     return "".join(ch for ch in code(value) if ch.isalnum())

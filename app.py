@@ -5,6 +5,7 @@ On Vercel:     the files in public/ are served from the CDN; /api/* reaches this
 """
 import csv
 import os
+from datetime import date
 from decimal import Decimal
 from pathlib import Path
 
@@ -14,6 +15,7 @@ from pydantic import BaseModel, Field
 
 from agent.graphs import analyze_claim_mail, check_scheme_eligibility, predict_expiry_risk, run_question
 from agent.tools import expiry_risk_options
+from agent.workqueue import claim_workqueue
 
 app = FastAPI(title="Project Sankalp pilot")
 ROOT = Path(__file__).resolve().parent
@@ -83,6 +85,14 @@ def get_claim_mail(email_id: str):
         if email["email_id"] == email_id:
             return email
     raise HTTPException(status_code=404, detail="Email not found")
+
+
+@app.get("/api/claims/workqueue")
+def get_claim_workqueue(status: str = "Pending", limit: int = 50, as_of: date | None = None):
+    """Read-only prioritised claim queue. status=all returns every claim; as_of defaults to today."""
+    if limit < 1 or limit > 500:
+        raise HTTPException(status_code=422, detail="limit must be between 1 and 500")
+    return claim_workqueue(as_of or date.today(), None if status.lower() == "all" else status, limit)
 
 
 @app.post("/api/claims/analyze-mail")
