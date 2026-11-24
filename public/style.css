@@ -809,3 +809,27 @@ button:disabled {
 .custom-mail-form { display: grid; gap: .5rem; margin-top: .75rem; }
 .custom-mail-form input, .custom-mail-form textarea { width: 100%; font: inherit; padding: .5rem; }
 .custom-mail-form button { justify-self: start; }
+
+/* Work queue */
+.queue-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin-bottom: 1rem; }
+.queue-controls label { font-weight: 600; color: var(--ink); }
+.queue-controls select { font: inherit; padding: .4rem .5rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); }
+.queue-controls .form-status { flex-basis: 100%; margin: 0; }
+.queue-summary { margin-bottom: 1rem; }
+.queue-totals { margin: 0 0 .5rem; color: var(--ink); font-weight: 600; }
+.queue-bands { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; padding: 0; list-style: none; }
+.priority-badge { display: inline-block; padding: .15rem .6rem; border-radius: 999px; font-size: .85rem; font-weight: 700; border: 1px solid var(--line); background: var(--paper); color: var(--ink); }
+.priority-badge.p1 { background: #fbe4e1; border-color: #e5b3ad; color: #8a2a20; }
+.priority-badge.p2 { background: var(--amber-pale); border-color: #e3cf9b; color: var(--amber); }
+.priority-badge.p3 { background: #efe9f7; border-color: #cfc3e3; color: #5a3d8a; }
+.priority-badge.p4 { background: var(--teal-pale); border-color: #b5dcd8; color: var(--teal-dark); }
+.priority-badge.p5 { background: var(--canvas); color: var(--muted); }
+.queue-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }
+.queue-table { width: 100%; min-width: 760px; border-collapse: collapse; font-size: .9rem; }
+.queue-table th, .queue-table td { padding: .6rem .75rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+.queue-table th { font-size: .75rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); background: var(--canvas); }
+.queue-table tbody tr:last-child td { border-bottom: 0; }
+.queue-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.queue-meta { color: var(--muted); font-size: .8rem; }
+.queue-findings { margin: 0; padding-left: 1rem; }
+.queue-findings li { margin: 0; }

@@ -628,3 +628,140 @@ expiryForm.addEventListener("submit", async (event) => {
 
 loadEmails();
 loadExpiryRiskOptions();
+
+// ---- Work queue ----
+const queueStatus = document.getElementById("queue-status");
+const queueLimit = document.getElementById("queue-limit");
+const queueRefresh = document.getElementById("queue-refresh");
+const queueMessage = document.getElementById("queue-status-message");
+const BAND_LABELS = {
+  P1: "Immediate",
+  P2: "Evidence review",
+  P3: "Duplicate review",
+  P4: "Standard",
+  P5: "Monitoring",
+};
+const REASON_LABELS = {
+  missing_invoice: "No matching invoice",
+  policy_breach: "Policy or quantity breach",
+  tat_over_30: "Credit took over 30 days",
+  pending_over_30: "Pending over 30 days",
+  duplicate: "Duplicate or repeated",
+  high_value: "High value",
+};
+let queueLoaded = false;
+
+function queueFindings(claim) {
+  const items = claim.priority.reasons.map((reason) => REASON_LABELS[reason] || reason);
+  if (claim.window.status === "breach") items.push(`Outside ${claim.claim_type.toLowerCase()} window`);
+  if (claim.supplied_quantity.status === "exceeds_supplied") items.push("Claims more than invoiced plus free");
+  if (claim.pts.status === "exception") items.push(`Price differs by INR ${claim.pts.difference_inr}`);
+  if (claim.exact_duplicate_row) items.push("Exact duplicate row");
+  return [...new Set(items)];
+}
+
+function queueSettlement(tat) {
+  if (tat.status === "over_target") return `${tat.days} days (over 30)`;
+  if (tat.status === "within_target") return `${tat.days} days`;
+  if (tat.status === "pending_over_target") return `Pending ${tat.days} days (over 30)`;
+  if (tat.status === "pending") return `Pending ${tat.days} days`;
+  if (tat.status === "closed") return "Closed";
+  return "Unverified";
+}
+
+function queueCell(text, className) {
+  const cell = document.createElement("td");
+  if (className) cell.className = className;
+  cell.textContent = text;
+  return cell;
+}
+
+function renderQueue(data) {
+  const money = (value) => value.toLocaleString("en-IN", { maximumFractionDigits: 0 });
+  document.getElementById("queue-totals").textContent =
+    `${data.total_claims.toLocaleString("en-IN")} claims, INR ${money(data.total_value_inr)} in total. Showing the top ${data.claims.length}.`;
+  document.getElementById("queue-bands").replaceChildren(
+    ...Object.entries(data.by_band).map(([band, count]) => {
+      const item = document.createElement("li");
+      item.className = `priority-badge ${band.toLowerCase()}`;
+      item.textContent = `${band} ${BAND_LABELS[band]}: ${count.toLocaleString("en-IN")}`;
+      return item;
+    })
+  );
+
+  document.getElementById("queue-rows").replaceChildren(
+    ...data.claims.map((claim) => {
+      const row = document.createElement("tr");
+
+      const priority = document.createElement("td");
+      const badge = document.createElement("span");
+      badge.className = `priority-badge ${claim.priority.band.toLowerCase()}`;
+      badge.textContent = claim.priority.band;
+      badge.title = `${BAND_LABELS[claim.priority.band]} (score ${claim.priority.score})`;
+      priority.append(badge, document.createTextNode(` ${claim.priority.score}`));
+
+      const claimCell = document.createElement("td");
+      const claimNo = document.createElement("strong");
+      claimNo.textContent = claim.claim_no;
+      const claimMeta = document.createElement("div");
+      claimMeta.className = "queue-meta";
+      claimMeta.textContent = `${claim.claim_type} · ${claim.claim_date} · ${claim.status}`;
+      claimCell.append(claimNo, claimMeta);
+
+      const keys = document.createElement("td");
+      keys.textContent = `${claim.stockist_code} / ${claim.sku_code} / ${claim.batch_no}`;
+      const invoice = document.createElement("div");
+      invoice.className = "queue-meta";
+      invoice.textContent = claim.invoice_ref ? `Invoice ${claim.invoice_ref}` : "No invoice reference";
+      keys.append(invoice);
+
+      const findings = document.createElement("td");
+      const list = document.createElement("ul");
+      list.className = "queue-findings";
+      const items = queueFindings(claim);
+      for (const text of items.length ? items : ["No findings"]) {
+        const li = document.createElement("li");
+        li.textContent = text;
+        list.append(li);
+      }
+      findings.append(list);
+
+      row.append(
+        priority,
+        claimCell,
+        queueCell(money(claim.claim_value_inr), "num"),
+        keys,
+        queueCell(queueSettlement(claim.tat)),
+        findings
+      );
+      return row;
+    })
+  );
+  document.getElementById("queue-summary").hidden = false;
+  document.getElementById("queue-table-wrap").hidden = false;
+}
+
+async function loadQueue() {
+  queueRefresh.disabled = true;
+  queueMessage.textContent = "Loading the queue...";
+  try {
+    const params = new URLSearchParams({ status: queueStatus.value, limit: queueLimit.value });
+    const data = await requestJson(`/api/claims/workqueue?${params}`);
+    renderQueue(data);
+    queueLoaded = true;
+    queueMessage.textContent = data.total_claims
+      ? `Queue as of ${data.as_of}.`
+      : "No claims match this filter.";
+  } catch (error) {
+    queueMessage.textContent = `Could not load the queue: ${error.message}`;
+  } finally {
+    queueRefresh.disabled = false;
+  }
+}
+
+queueRefresh.addEventListener("click", loadQueue);
+queueStatus.addEventListener("change", loadQueue);
+queueLimit.addEventListener("change", loadQueue);
+document.getElementById("queue-tab").addEventListener("click", () => {
+  if (!queueLoaded) loadQueue();
+});
