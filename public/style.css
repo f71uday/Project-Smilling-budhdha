@@ -803,3 +803,9 @@ button:disabled {
     transition-duration: 0.01ms !important;
   }
 }
+
+.custom-mail { margin-top: 1rem; border: 1px solid var(--line, #d9dfdb); border-radius: 8px; padding: .75rem 1rem; }
+.custom-mail summary { cursor: pointer; font-weight: 600; }
+.custom-mail-form { display: grid; gap: .5rem; margin-top: .75rem; }
+.custom-mail-form input, .custom-mail-form textarea { width: 100%; font: inherit; padding: .5rem; }
+.custom-mail-form button { justify-self: start; }

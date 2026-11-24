@@ -313,6 +313,20 @@ async function loadEmails() {
   }
 }
 
+document.getElementById("custom-mail-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const [year, month, day] = document.getElementById("custom-date").value.split("-");
+  showMail({
+    email_id: "CUSTOM-" + Date.now(),
+    received_date: year ? `${day}-${month}-${year}` : "",
+    from_name: document.getElementById("custom-from").value.trim(),
+    stockist_code_by_mailbox_rule: document.getElementById("custom-stockist").value.trim(),
+    subject: document.getElementById("custom-subject").value.trim(),
+    body: document.getElementById("custom-body").value,
+  });
+  statusMessage.textContent = "Your email is loaded. Run analysis when you are ready.";
+});
+
 mailSelect.addEventListener("change", loadSelectedMail);
 
 analyzeButton.addEventListener("click", async () => {
