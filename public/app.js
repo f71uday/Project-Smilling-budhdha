@@ -461,6 +461,11 @@ async function loadExpiryRiskOptions() {
 
 function formatRiskReason(code) {
   const labels = {
+    SHELF_LIFE_UNDER_12_MONTHS: "The batch has under 12 months of shelf life left.",
+    SHELF_LIFE_UNDER_9_MONTHS: "The batch has under 9 months of shelf life left.",
+    SCHEME_SALE: "This is a scheme sale. Scheme sales lead to expiry claims far more often.",
+    ORDER_ABOVE_USUAL_SIZE: "The quantity is more than twice this stockist's usual order for the product.",
+    STOCK_COVER_UNAVAILABLE: "No usable C&F stock snapshot, so stock cover and FEFO were not scored.",
     LOW_DAYS_TO_EXPIRY: "The batch has 90 days or less until expiry.",
     VERY_LOW_DAYS_TO_EXPIRY: "The batch has 30 days or less until expiry.",
     HIGH_PROJECTED_DAYS_OF_COVER: "Projected stock covers more than 90 days of average outward.",
@@ -520,6 +525,7 @@ function renderExpiryRisk(result, proposal) {
     days_to_expiry: "Days to expiry",
     current_inventory_packs: "Current inventory",
     proposed_quantity_packs: "Proposed quantity",
+    usual_order_packs: "Usual order for this stockist",
     projected_inventory_packs: "Projected inventory",
     average_monthly_outward_packs: "Average monthly outward",
     projected_days_of_cover: "Projected days of cover",
@@ -607,6 +613,7 @@ expiryForm.addEventListener("submit", async (event) => {
     sku_code: skuSelect.value,
     batch_no: batchSelect.value,
     proposed_quantity: Number(document.getElementById("proposal-quantity").value),
+    on_scheme: document.getElementById("proposal-scheme").checked,
   };
   expirySubmit.disabled = true;
   expiryResult.hidden = true;

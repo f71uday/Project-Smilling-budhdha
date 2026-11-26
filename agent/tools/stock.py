@@ -1,4 +1,7 @@
 """Stockist master and C&F stock-snapshot lookups."""
+from collections import defaultdict
+from functools import lru_cache
+
 from langchain_core.tools import tool
 
 from agent.tools import data
@@ -9,9 +12,16 @@ def stockist_record(stockist_code: str) -> dict | None:
     return next((r for r in data.stockists() if data.code(r["stockist_code"]) == key), None)
 
 
+@lru_cache(maxsize=1)
+def _snapshots_by_key() -> dict[tuple[str, str], list[dict[str, str]]]:
+    index: dict[tuple[str, str], list[dict[str, str]]] = defaultdict(list)
+    for row in data.snapshots():
+        index[(data.cnf_key(row["cnf_code"]), data.code(row["sku_code"]))].append(row)
+    return index
+
+
 def snapshot_rows(cnf_code: str, sku_code: str) -> list[dict[str, str]]:
-    key = data.cnf_key(cnf_code), data.code(sku_code)
-    return [r for r in data.snapshots() if (data.cnf_key(r["cnf_code"]), data.code(r["sku_code"])) == key]
+    return _snapshots_by_key().get((data.cnf_key(cnf_code), data.code(sku_code)), [])
 
 
 @tool

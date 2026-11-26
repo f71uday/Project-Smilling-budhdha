@@ -1,7 +1,7 @@
 """Tools read the data pack. Exact facts come from here, never from the model."""
 from agent.tools.batches import batch_record, lookup_batch, lookup_sku_price
 from agent.tools.claims import claim_rows, lookup_claim_history
-from agent.tools.sales import lookup_invoice_quantity
+from agent.tools.sales import lookup_invoice_quantity, lookup_purchase_history
 from agent.tools.stock import (
     expiry_risk_options,
     lookup_stock_snapshot,
@@ -20,6 +20,7 @@ ALL_TOOLS = {
         lookup_sku_price,
         lookup_claim_history,
         lookup_invoice_quantity,
+        lookup_purchase_history,
         lookup_stockist,
         lookup_stock_snapshot,
     )
